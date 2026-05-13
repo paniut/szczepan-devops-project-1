@@ -1,0 +1,25 @@
+name: Integracja CI/CD
+
+on:
+  push:
+    branches: [ "main" ] # "Uruchamiaj za każdym razem, gdy robisz push do main.""
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobranie kodu
+        uses: actions/checkout@v4
+
+      - name: Logowanie do Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Budowanie i push obrazu
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/moje-html:latest
